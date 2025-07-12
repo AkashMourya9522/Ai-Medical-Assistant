@@ -18,7 +18,7 @@ export async function POST(req: NextRequest){
                 credits: 10,
                 //@ts-ignore
             }).returning({usersTable})
-            return NextResponse.json(response);
+            return NextResponse.json(response[0]?.usersTable);
         }
         return NextResponse.json(dbRes[0]);
     } catch (error) {
