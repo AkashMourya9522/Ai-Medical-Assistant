@@ -5,28 +5,33 @@ import { useUser } from "@clerk/nextjs";
 import { UserDetailContext } from "@/context/UserDetailContext";
 
 export type UserDetailsType = {
-  name:string,email:string,credits:number
-} 
+  name: string;
+  email: string;
+  credits: number;
+};
 
-function provider({children,}: Readonly<{children: React.ReactNode;}>) {
+function provider({ children }: Readonly<{ children: React.ReactNode }>) {
 
-  const [userDetails,setUserDetails] = useState<any>(null);
-  const user = useUser()
+  const [userDetails, setUserDetails] = useState<any>(null);
+  const user = useUser();
+
   const createUser = async () => {
     const response = await axios.post("/api/users/");
-    console.log("response from backend ",response.data);
+    console.log("response from backend ", response.data);
     setUserDetails(response.data);
   };
+
   useEffect(() => {
-     createUser();
+    user && createUser();
   }, []);
-  return <div>
-    <UserDetailContext.Provider value={{userDetails,setUserDetails}}>
-      
-    {children}
-    </UserDetailContext.Provider>
-    
-    </div>;
+
+  return (
+    <div>
+      <UserDetailContext.Provider value={{ userDetails, setUserDetails }}>
+        {children}
+      </UserDetailContext.Provider>
+    </div>
+  );
 }
 
 export default provider;

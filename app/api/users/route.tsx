@@ -22,7 +22,6 @@ export async function POST(req: NextRequest){
         }
         return NextResponse.json(dbRes[0]);
     } catch (error) {
-        
+        console.log("error in creating user ", error);
     }
-
 }

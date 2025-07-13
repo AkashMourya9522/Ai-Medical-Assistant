@@ -9,7 +9,7 @@ const layout = ({
   return (
     <div>
         <AppHeader/>
-        <div className='p-5'>
+        <div className='px-10 sm:px-20 py-10'>
         {children}</div>
         </div>
   )

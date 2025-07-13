@@ -1,6 +1,7 @@
-import HistoryList from '@/app/_components/HistoryList'
+import HistoryList from '@/app/(routes)/dashboard/_components/HistoryList'
 import { Button } from '@/components/ui/button'
 import React from 'react'
+import DoctorAgentList from './_components/DoctorAgentList'
 
 const Dashboard = () => {
   return (
@@ -11,6 +12,7 @@ const Dashboard = () => {
         <Button>Consult With Doctor</Button>
         </div>
         <HistoryList/>
+        <DoctorAgentList/>
     </div>
   )
 }
