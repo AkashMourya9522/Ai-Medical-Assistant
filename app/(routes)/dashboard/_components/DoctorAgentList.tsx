@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { AIDoctorAgents } from "@/doctorList/list";
-import { IconArrowBadgeRight, IconArrowRightBar, IconArrowRightFromArc } from "@tabler/icons-react";
+import { IconArrowBadgeRight } from "@tabler/icons-react";
 import Image from "next/image";
 import React from "react";
 

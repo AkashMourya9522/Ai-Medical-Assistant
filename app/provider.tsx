@@ -14,9 +14,9 @@ function provider({ children }: Readonly<{ children: React.ReactNode }>) {
 
   const [userDetails, setUserDetails] = useState<any>(null);
   const user = useUser();
-
-  const createUser = async () => {
-    const response = await axios.post("/api/users/");
+  try {
+    const createUser = async () => {
+    const response = await axios.post("/api/users");
     console.log("response from backend ", response.data);
     setUserDetails(response.data);
   };
@@ -24,6 +24,11 @@ function provider({ children }: Readonly<{ children: React.ReactNode }>) {
   useEffect(() => {
     user && createUser();
   }, []);
+  } catch (error) {
+    console.log("There seems to be an error with the createUser thing",error)
+  }
+
+  
 
   return (
     <div>

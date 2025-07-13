@@ -7,6 +7,9 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest){
     const user = await currentUser()
     try {
+        if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
         const dbRes = await db.select().from(usersTable)
         //@ts-ignore
         .where(eq(usersTable.email, user?.primaryEmailAddress?.emailAddress) )
@@ -23,5 +26,6 @@ export async function POST(req: NextRequest){
         return NextResponse.json(dbRes[0]);
     } catch (error) {
         console.log("error in creating user ", error);
+         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

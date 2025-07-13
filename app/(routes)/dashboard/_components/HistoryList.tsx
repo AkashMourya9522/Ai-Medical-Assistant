@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useState } from "react";
+import AddNewSession from "./AddNewSession";
 
 const HistoryList = () => {
   const [historyList, setHistoryList] = useState([]);
@@ -12,7 +13,7 @@ const HistoryList = () => {
           <Image src={'/medical-assistance.png'} height={150} width={150} alt="Medical Assistance"/>
           <h1 className="text-3xl font-semibold">No Recent Consultations</h1>
           <p className="">You Don't Have Any Doctor Consultations</p>
-          <Button>Consult Now</Button>
+          <AddNewSession/>
         </div>
       ) : (
         <div>You do  have history now</div>
