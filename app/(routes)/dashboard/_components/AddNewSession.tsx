@@ -51,8 +51,9 @@ function AddNewSession() {
         <DialogHeader>
           <DialogTitle>Add Details Regarding Your Illness</DialogTitle>
           <DialogDescription asChild>
-            {suggestDoctors.length > 0 ? (
-              suggestDoctors.map((doctor) => (
+            {suggestDoctors.length > 0 ? (<div className="grid grid-cols-1">
+              
+              {suggestDoctors.map((doctor) => (
                 <div key={doctor.id}>
                   <h2 className="font-bold mt-2">{doctor.specialist}</h2>
                   <h2 className="text-gray-500 line-clamp-2 mt-2">
@@ -62,8 +63,8 @@ function AddNewSession() {
                     Consult <IconArrowBadgeRight />{" "}
                   </Button>
                 </div>
-              ))
-            ) : (
+              ))}
+            </div>) : (
               <div className="mt-5 ">
                 <Textarea
                   onChange={handleTextArea}
