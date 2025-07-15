@@ -26,10 +26,18 @@ export async function POST(req: NextRequest) {
       ?.trim()
       .replace("```json", "")
       .replace("```", "");
-
+    console.log(
+      "this is from the route and the data before stringifying the cleaned response is",
+      cleanedResponse
+    );
     const stringVersion = JSON.parse(cleanedResponse);
+    console.log(
+      "this is from the route and the data before stringifying the after conversion",
+      stringVersion
+    );
     return NextResponse.json(stringVersion);
-  } catch (error) {
+  } catch (error: any) {
+    console.log("hello from the api catch error section ", error);
     return NextResponse.json(error);
   }
 }
