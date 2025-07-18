@@ -14,13 +14,16 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { IconArrowBadgeRight } from "@tabler/icons-react";
 import axios from "axios";
 import { ArrowRight, Loader, Loader2 } from "lucide-react";
+import { useRouter } from 'next/navigation'
 import { stringify } from "querystring";
 
 import React, { useState } from "react";
 
 type Doctor = {
-  specialist: string;
-  id: number;
+  specialist: string,
+  id: number,
+  image:string,
+  
 };
 
 function AddNewSession() {
@@ -28,6 +31,7 @@ function AddNewSession() {
   const [loading, setLoading] = useState<boolean>(false);
   const [suggestDoctors, setSuggestDoctors] = useState<any>([]);
   const [selectedDoctor, setSelectedDoctor] = useState({});
+  const router = useRouter()
   console.log("The selected Doctor has this data i guess", selectedDoctor);
 
   function handleTextArea(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -43,13 +47,14 @@ function AddNewSession() {
         setLoading(true)
     const dbRes = await axios.post("/api/session-chat", {
       notes: note,
-      selectedDoctor: selectedDoctor,
+      selectedDoctor: doctor,
     });
     const sessionId = dbRes.data.sessionId;
     console.log("The sessionId",sessionId)
     setLoading(false)
     console.log("The response from the database on frontend", dbRes.data);
-  
+    console.log("just above the routing logic !!!!!!!!!!")
+  router.push(`/dashboard/voice-call/${sessionId}`,)
       } catch (error) {
         setLoading(false)
         console.log('Error while adding the data to database',error)
