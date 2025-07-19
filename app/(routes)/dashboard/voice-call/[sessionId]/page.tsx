@@ -1,10 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Circle, PhoneCall, PhoneCallIcon } from "lucide-react";
+import { Circle, PhoneCall, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import Vapi from "@vapi-ai/web";
+import { IconPhoneEnd } from "@tabler/icons-react";
 
 interface sessionDetailsType {
   id: number;
@@ -29,7 +31,10 @@ function page() {
   const { sessionId } = useParams();
 
   const [sessionDetails, setSessionDetails] = useState<sessionDetailsType>();
+  const [callStarted, setCallStarted] = useState(false);
+  const [vapiInstance,setVapiInstance] = useState<any>();
 
+  
   useEffect(() => {
     sessionId && getSessionDetails();
   }, [sessionId]);
@@ -42,12 +47,43 @@ function page() {
     setSessionDetails(response.data);
   }
 
+  function startCall() {
+    const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
+    console.log(vapi)
+    setVapiInstance(vapi)
+    vapi.start(process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID);
+    
+    vapi.on("call-start", () => {
+      setCallStarted(true);
+      console.log("Call started");
+    });
+    vapi.on("call-end", () => {
+      setCallStarted(false);
+      console.log("Call ended");
+    });
+    vapi.on("message", (message) => {
+      if (message.type === "transcript") {
+        console.log(`${message.role}: ${message.transcript}`);
+      }
+    });
+  }
+
+  function endCall() {
+    if(!vapiInstance) return ;
+    vapiInstance.stop();
+    vapiInstance.off('call-start');
+    vapiInstance.off('call-end');
+    vapiInstance.off('message');
+    setCallStarted(false)
+    setVapiInstance(null)
+  }
+
   return (
     <div className="border-2 rounded-lg p-5 bg-secondary">
       <div className="flex justify-between rounded-lg items-center">
         <h2 className="border-2 rounded-lg flex gap-2 items-center p-3">
           {" "}
-          <Circle className="h-4 w-4" /> Not Connected
+          <Circle className={`h-4 w-4 rounded-full ${callStarted ? 'bg-green-500': 'bg-red-500'}`} /> {callStarted ? 'Connected' : 'Not Connected'}
         </h2>
         <h1 className="text-gray-500 text-2xl font-bold">00:00</h1>
       </div>
@@ -60,15 +96,26 @@ function page() {
             height={120}
             alt="Doctor Image"
           />
-          <h1 className="text-xl font-bold mt-5">{sessionDetails.selectedDoctor.specialist}</h1>
+          <h1 className="text-xl font-bold mt-5">
+            {sessionDetails.selectedDoctor.specialist}
+          </h1>
           <p className="text-sm text-gray-400">AI Medical Voice Agent </p>
 
           <div className="flex flex-col items-center mt-32">
             <h1 className="text-gray-400">AI Agent Message</h1>
             <h1 className="text-lg">User Message</h1>
           </div>
-          <Button className="mt-20"><PhoneCallIcon/>Start Call</Button>
-          
+          {!callStarted ? (
+            <Button onClick={startCall} className="mt-20">
+              <PhoneCallIcon />
+              Start Call
+            </Button>
+          ) : (
+            <Button onClick={endCall} variant={"destructive"} className="mt-20">
+              <PhoneOffIcon />
+              End Call
+            </Button>
+          )}
         </div>
       )}
     </div>
