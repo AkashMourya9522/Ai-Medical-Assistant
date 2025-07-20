@@ -1,11 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Circle, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
+import { Circle, Loader, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Vapi from "@vapi-ai/web";
+import provider from "@/app/provider";
 
 interface sessionDetailsType {
   id: number;
@@ -54,10 +55,39 @@ function page() {
   }
 
   function startCall() {
+    console.log("Starting call with session details:", sessionDetails);
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
-    console.log(vapi);
+    console.log("new vapi object i guess ",vapi);
+
     setVapiInstance(vapi);
-    vapi.start(process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID);
+    const vapiAgentConfig = {
+      name: "AI Medical Doctor Assistant",
+      firstMessage:
+        "Hi there! Iam your AI medical assistant. How may i help you?",
+      transcriber: {
+        provider: "assembly-ai",
+        language: "en",
+      },
+      voice: {
+        provider: "playht",
+        voiceId: sessionDetails?.selectedDoctor.voiceId,
+      },
+      model: {
+        provider: "openai",
+        model: "gpt-4",
+        messages: [
+          {
+            role: "system",
+            content: sessionDetails?.selectedDoctor.agentPrompt,
+          },
+        ],
+      },
+    };
+    console.log("Starting the vapi");
+    //@ts-ignore
+    vapi.start(vapiAgentConfig);
+
+    console.log("vapi has started",vapi)
 
     vapi.on("call-start", () => {
       setCallStarted(true);
@@ -143,18 +173,21 @@ function page() {
             <h1 className="text-gray-400">AI Agent Message</h1>
           </div>
           <div className="mt-5 overflow-y-auto flex flex-col items-center px-10 md:px-28 lg:px-52 xl:px-72">
-            {/* {liveTranscript && liveTranscript?.length>0 && <h1 className="text-lg">
-              {currentRole}:{liveTranscript}
-            </h1>} */}
             {messages.slice(-4).map((msg: messagesType, index) => (
               <h1 className="text-gray-500" key={index}>
-                <span className="font-semibold capitalize">{msg.role}</span> : {msg.text}
+                <span className="font-semibold capitalize">{msg.role}</span> :{" "}
+                {msg.text}
               </h1>
             ))}
+            {liveTranscript && liveTranscript?.length > 0 && (
+              <h1 className="text-lg">
+                {currentRole}:{liveTranscript}
+              </h1>
+            )}
           </div>
           {!callStarted ? (
             <Button onClick={startCall} className="mt-20">
-              <PhoneCallIcon />
+                <PhoneCallIcon />
               Start Call
             </Button>
           ) : (
