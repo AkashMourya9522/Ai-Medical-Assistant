@@ -1,11 +1,34 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddNewSession from "./AddNewSession";
+import axios from "axios";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import HistoryTable from "./HistoryTable";
+import { sessionDetailsType } from "../voice-call/[sessionId]/page";
 
 const HistoryList = () => {
-  const [historyList, setHistoryList] = useState([]);
+  const [historyList, setHistoryList] = useState<sessionDetailsType[]>([]);
+
+  useEffect(()=>{
+    GetHistoryList();
+  },[])
+
+
+  async function GetHistoryList(){
+    const response = await axios.get('/api/session-chat?sessionId=all')
+    console.log(response.data)
+    setHistoryList(response.data);
+  }
   return (
     <div className="mt-10">
       {historyList.length == 0 ? (
@@ -16,10 +39,10 @@ const HistoryList = () => {
           <AddNewSession/>
         </div>
       ) : (
-        <div>You do  have history now</div>
+        <HistoryTable historyList={historyList}/>
       )}
     </div>
-  );
-};
+  )
+}
 
 export default HistoryList;

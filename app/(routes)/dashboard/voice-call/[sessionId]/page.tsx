@@ -9,7 +9,7 @@ import Vapi from "@vapi-ai/web";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"
 
-interface sessionDetailsType {
+export interface sessionDetailsType {
   id: number;
   sessionId: string;
   notes: string;

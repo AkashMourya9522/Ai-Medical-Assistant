@@ -1,7 +1,7 @@
 import { db } from "@/config/db";
 import { SessionChatTable } from "@/config/schema";
 import { currentUser } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -29,13 +29,26 @@ console.log("this is what dbREs0 is after it is added",dbRes[0])
     }
 }
 
-export async function GET(req:NextRequest){
-    const {searchParams} = new URL(req.url)
-    const sessionId = searchParams.get('sessionId')
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const sessionId = searchParams.get('sessionId');
     const user = await currentUser();
-    const result = await db.select().from(SessionChatTable).
-    //@ts-ignore
-    where(eq(SessionChatTable.sessionId,(sessionId)))
-    console.log("this is the result from session chat",result)
-    return NextResponse.json(result[0])
+    let result;
+
+    if (sessionId === 'all') {
+        result = await db.select()
+            .from(SessionChatTable)
+            //@ts-ignore
+            .where(eq(SessionChatTable.createdBy, user?.primaryEmailAddress?.emailAddress))
+            .orderBy(desc(SessionChatTable.id));
+
+    } else {
+        result = await db.select()
+            .from(SessionChatTable)
+            //@ts-ignore
+            .where(eq(SessionChatTable.sessionId, sessionId));
+    }
+
+    console.log("this is the result from session chat", result);
+    return NextResponse.json(sessionId === 'all' ? result : result[0]);
 }
