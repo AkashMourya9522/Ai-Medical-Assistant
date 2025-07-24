@@ -1,12 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Circle, Loader, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
+import { Circle, Loader, Loader2, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Vapi from "@vapi-ai/web";
-import provider from "@/app/provider";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"
 
 interface sessionDetailsType {
   id: number;
@@ -37,10 +38,12 @@ function page() {
 
   const [sessionDetails, setSessionDetails] = useState<sessionDetailsType>();
   const [callStarted, setCallStarted] = useState(false);
-  const [vapiInstance, setVapiInstance] = useState<any>();
+  const [vapiInstance, setVapiInstance] = useState<any>(null);
   const [currentRole, setCurrentRole] = useState<string | null>();
   const [liveTranscript, setLiveTranscript] = useState<string>();
   const [messages, setMessages] = useState<messagesType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter()
 
   useEffect(() => {
     sessionId && getSessionDetails();
@@ -57,9 +60,11 @@ function page() {
   function startCall() {
     console.log("Starting call with session details:", sessionDetails);
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
-    console.log("new vapi object i guess ",vapi);
+    console.log("new vapi object i guess ", vapi);
 
     setVapiInstance(vapi);
+    console.log("session details in start call", sessionDetails);
+    console.log(sessionDetails?.selectedDoctor.voiceId)
     const vapiAgentConfig = {
       name: "AI Medical Doctor Assistant",
       firstMessage:
@@ -87,14 +92,19 @@ function page() {
     //@ts-ignore
     vapi.start(vapiAgentConfig);
 
-    console.log("vapi has started",vapi)
+    console.log("vapi has started", vapi);
 
     vapi.on("call-start", () => {
       setCallStarted(true);
       console.log("Call started");
     });
-    vapi.on("call-end", () => {
+    vapi.on("call-end", async () => {
       setCallStarted(false);
+      setVapiInstance(null);
+      await GenerateReport();
+      setCallStarted(false);
+      setVapiInstance(null);
+      setLoading(false)
       console.log("Call ended");
     });
     vapi.on("message", (message) => {
@@ -131,14 +141,33 @@ function page() {
     });
   }
 
-  function endCall() {
-    if (!vapiInstance) return;
-    vapiInstance.stop();
-    vapiInstance.off("call-start");
-    vapiInstance.off("call-end");
-    vapiInstance.off("message");
-    setCallStarted(false);
-    setVapiInstance(null);
+  async function endCall() {
+    if (vapiInstance) {
+      vapiInstance.stop();
+      setLoading(true)
+    }
+
+    // vapiInstance.off("call-start");
+    // vapiInstance.off("call-end");
+    // vapiInstance.off("message");
+    // setCallStarted(false);
+    // setVapiInstance(null);
+    // console.log("just before gerating report")
+  }
+
+  async function GenerateReport() {
+    setLoading(true);
+    console.log("Generating report with session details:");
+    const result = await axios.post("/api/medical-report", {
+      messages: messages,
+      sessionDetail: sessionDetails,
+      sessionId: sessionId,
+    });
+    console.log("Report generated:", result.data);
+    toast("Report Generated Successfully")
+    setLoading(false)
+    router.push("/dashboard")
+    
   }
 
   return (
@@ -186,14 +215,21 @@ function page() {
             )}
           </div>
           {!callStarted ? (
-            <Button onClick={startCall} className="mt-20">
-                <PhoneCallIcon />
+            <Button
+              disabled={vapiInstance ? true : false}
+              onClick={startCall}
+              className="mt-20"
+            >
+              <PhoneCallIcon />
               Start Call
             </Button>
           ) : (
-            <Button onClick={endCall} variant={"destructive"} className="mt-20">
-              <PhoneOffIcon />
-              End Call
+            <Button disabled={loading} onClick={endCall} variant={"destructive"} className="mt-20">
+              {
+                loading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <PhoneOffIcon />
+              }{
+                loading ? "Generating Report": "End Call"
+              }
             </Button>
           )}
         </div>

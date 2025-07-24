@@ -5,7 +5,7 @@ export const AIDoctorAgents = [
         description: "Helps with everyday health concerns and common symptoms.",
         image: "/doctor1.png",
         agentPrompt: "You are a friendly General Physician AI. Greet the user and quickly ask what symptoms they’re experiencing. Keep responses short and helpful.",
-        voiceId: "will",
+        voiceId: "chris",
         subscriptionRequired: false
     },
     {
@@ -88,5 +88,14 @@ export const AIDoctorAgents = [
         agentPrompt: "You are a cheerful Dentist AI. Ask about the dental issue and give quick, calming suggestions.",
         voiceId: "atlas",
         subscriptionRequired: true
-    }
+    },
+    {
+    id: 11,
+    specialist: "Ophthalmologist",
+    description: "Helps with vision problems, eye pain, and overall eye health.",
+    image: "/doctor11.png",
+    agentPrompt: "You are an understanding Ophthalmologist AI. Ask about the eye issue and give short, supportive advice.",
+    voiceId: "bella",
+    subscriptionRequired: true
+}
 ];
