@@ -30,10 +30,7 @@ Return the result in this JSON format:{
 "medicationsMentioned":["med1", "med2"],
 "recommendations": ["rec1", "rec2"],}
 Only include valid fields. Respond with nothing else.
-Depending 
-
 `;
-console.log('from the route i guess');
 
   try {
     const UserInput =
@@ -41,7 +38,7 @@ console.log('from the route i guess');
       JSON.stringify(sessionDetail) +
       ",Conversation:" +
       JSON.stringify(messages);
-      console.log("User Input generated is:", UserInput);
+    console.log("User Input generated is:", UserInput);
     const completion = await openai.chat.completions.create({
       model: "google/gemini-2.0-flash-exp:free",
       messages: [
@@ -64,8 +61,9 @@ console.log('from the route i guess');
     const stringVersion = JSON.parse(cleanedResponse);
     const result = await db
       .update(SessionChatTable)
-      .set({ report: stringVersion,conversation: messages })
-      .where(eq(SessionChatTable.sessionId, sessionId)).returning();
+      .set({ report: stringVersion, conversation: messages })
+      .where(eq(SessionChatTable.sessionId, sessionId))
+      .returning();
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(error);
