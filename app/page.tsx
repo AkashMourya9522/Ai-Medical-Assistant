@@ -10,7 +10,7 @@ import { UserDetailContext } from "@/context/UserDetailContext";
 
 export default function HeroSectionOne() {
   const userData = useContext(UserDetailContext);
-  console.log("userData in HeroSectionOne", userData);
+
   return (
     <div className="relative  my-10 flex  flex-col items-center justify-center">
       <Navbar />

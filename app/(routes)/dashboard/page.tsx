@@ -12,7 +12,7 @@ const Dashboard = () => {
         <h1>Dashboard page</h1>
         <AddNewSession/>
         </div>
-        <HistoryList/>
+        {/* <HistoryList/> */}
         <DoctorAgentList/>
     </div>
   )

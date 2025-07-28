@@ -53,7 +53,6 @@ Only include valid fields. Respond with nothing else.
       ],
     });
     const gptResponse = completion.choices[0].message;
-    console.log("GPT Response:", gptResponse);
     const cleanedResponse = gptResponse.content
       ?.trim()
       .replace("```json", "")

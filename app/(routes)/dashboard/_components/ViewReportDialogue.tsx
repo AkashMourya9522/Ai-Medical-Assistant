@@ -51,7 +51,7 @@ function ViewReportDialogue({ record }: { record: sessionDetailsType }) {
         </DialogHeader>
 
         
-        <div className="mt-4 space-y-6 text-gray-800 max-h-[50vh] overflow-y-auto pr-6 border rounded-lg bg-white shadow-inner">
+        <div className="mt-4 space-y-6 text-gray-800 max-h-[50vh] overflow-y-auto border rounded-lg bg-white shadow-inner p-5">
           {report ? (
             <div className="space-y-4 p-4 border rounded-lg">
               <h2 className="text-lg font-semibold text-blue-600 border-b pb-2">

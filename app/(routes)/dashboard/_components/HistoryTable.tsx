@@ -30,15 +30,16 @@ function HistoryTable({ historyList }: props) {
       </TableHeader>
       <TableBody>
         {historyList.map((record, index) => (
-          <TableRow>
+          <TableRow key={index}>
             <TableCell className="font-medium">
               {record.selectedDoctor.specialist}
             </TableCell>
-            <TableCell>{record.notes}</TableCell>
+            <TableCell className="max-w-[120px] md:max-w-xs truncate">
+              {record.notes}
+            </TableCell>
             <TableCell>
               {moment(new Date(record.createdOn)).fromNow()}
             </TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
             <TableCell className="text-right">
               <ViewReportDialogue record={record} />
             </TableCell>

@@ -20,7 +20,6 @@ export async function POST(req:NextRequest){
             //@ts-ignore
         }).returning()
 //@ts-ignore
-console.log("this is what dbREs0 is after it is added",dbRes[0])
         return NextResponse.json(dbRes[0])
     } catch (error) {
         console.log("Error while saving data into database!!!",error)
@@ -48,7 +47,5 @@ export async function GET(req: NextRequest) {
             //@ts-ignore
             .where(eq(SessionChatTable.sessionId, sessionId));
     }
-
-    console.log("this is the result from session chat", result);
-    return NextResponse.json(sessionId === 'all' ? result : result[0]);
+   return NextResponse.json(sessionId === 'all' ? result : result[0]);
 }

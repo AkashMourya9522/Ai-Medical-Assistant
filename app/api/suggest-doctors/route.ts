@@ -4,8 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { note } = await req.json();
-  console.log("the user notes in the api is",note)
-  try {
+ try {
     const completion = await openai.chat.completions.create({
       model: "google/gemini-2.0-flash-exp:free",
       messages: [
@@ -32,8 +31,7 @@ export async function POST(req: NextRequest) {
     // const stringVersion = JSON.parse(cleanedResponse);
     // return NextResponse.json(stringVersion);
     const gptResponse = completion.choices[0].message.content;
-    console.log("GPT Response in backend file", gptResponse);
-    
+   
     // Clean and parse the response
     const cleanedResponse = gptResponse
       ?.trim()
@@ -53,10 +51,9 @@ export async function POST(req: NextRequest) {
       doctorIds.includes(doctor.id)
     );
   
-    console.log("Suggested Doctors based on GPT response", suggestedDoctors);
     return NextResponse.json(suggestedDoctors);
   } catch (error: any) {
-    console.log("hello from the api catch error section ", error);
+   console.log ("Error: ", error);
     return NextResponse.json(error);
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Circle, Loader, Loader2, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
+import { Circle, Loader2, PhoneCallIcon, PhoneOffIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -53,18 +53,13 @@ function page() {
     const response = await axios.get(
       "/api/session-chat?sessionId=" + sessionId
     );
-    console.log(response.data);
-    setSessionDetails(response.data);
+   setSessionDetails(response.data);
   }
 
   function startCall() {
-    console.log("Starting call with session details:", sessionDetails);
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
-    console.log("new vapi object i guess ", vapi);
-
+    
     setVapiInstance(vapi);
-    console.log("session details in start call", sessionDetails);
-    console.log(sessionDetails?.selectedDoctor.voiceId)
     const vapiAgentConfig = {
       name: "AI Medical Doctor Assistant",
       firstMessage:
@@ -108,10 +103,7 @@ function page() {
       console.log("Call ended");
     });
     vapi.on("message", (message) => {
-      console.log("the message object", message);
-      console.log("the role is ", message.role);
-      console.log("the type is ", message.transcriptType);
-
+      
       if (message.type === "transcript") {
         const { role, transcriptType, transcript } = message;
 
@@ -143,6 +135,7 @@ function page() {
 
   async function endCall() {
     if (vapiInstance) {
+      console.log("This is the end call button")
       vapiInstance.stop();
       setLoading(true)
     }
@@ -157,13 +150,11 @@ function page() {
 
   async function GenerateReport() {
     setLoading(true);
-    console.log("Generating report with session details:");
     const result = await axios.post("/api/medical-report", {
       messages: messages,
       sessionDetail: sessionDetails,
       sessionId: sessionId,
     });
-    console.log("Report generated:", result.data);
     toast("Report Generated Successfully")
     setLoading(false)
     router.push("/dashboard")
