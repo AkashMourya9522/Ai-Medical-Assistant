@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
   
     let doctorIds: number[] = [];
     try {
+      //@ts-ignore
       doctorIds = JSON.parse(cleanedResponse);
     } catch (e) {
       console.log("Failed to parse GPT response:", cleanedResponse);
