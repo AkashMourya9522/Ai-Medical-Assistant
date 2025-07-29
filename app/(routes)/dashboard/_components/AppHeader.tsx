@@ -29,7 +29,7 @@ const AppHeader = async () => {
           height={75}
           width={75}
         />
-        <h1 className="ml-2 hidden md:flex md:gap-2 items-center">
+        <h1 className="ml-2 hidden md:flex md:gap-2 items-center font-semibold">
           AI Medical Voice Agent <Hospital className="text-green-600" />
         </h1>
       </div>

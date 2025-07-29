@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { FeatureBentoGrid } from "./_components/FeatureBentoGrid";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,10 @@ import { UserDetailContext } from "@/context/UserDetailContext";
 
 export default function HeroSectionOne() {
   const userData = useContext(UserDetailContext);
+  const { user } = useUser(); // 1. Get user state from Clerk
 
   return (
-    <div className="relative  my-10 flex  flex-col items-center justify-center">
+    <div className="relative my-10 flex flex-col items-center justify-center">
       <Navbar />
       <div className="absolute inset-y-0 left-0 h-full w-px bg-neutral-200/80 dark:bg-neutral-800/80">
         <div className="absolute top-0 h-40 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
@@ -25,7 +26,7 @@ export default function HeroSectionOne() {
       </div>
       <div className="px-4 py-10 md:py-20">
         <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-slate-700 md:text-4xl lg:text-7xl dark:text-slate-300">
-          {"Revolutionize Patient Care with AI Medical Assistant"
+          {"Empower Healthcare with Your AI Voice Assistant"
             .split(" ")
             .map((word, index) => (
               <motion.span
@@ -56,29 +57,34 @@ export default function HeroSectionOne() {
           }}
           className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400"
         >
-          Deliver personalized healthcare solutions with our AI-driven medical
-          assistant. Enhance patient engagement, streamline workflows, and
-          improve outcomes with cutting-edge technology.
+          Transform patient interactions and optimize medical workflows with our
+          intuitive AI Voice Assistant. Enhance efficiency, reduce administrative
+          burden, and provide superior care with cutting-edge conversational AI.
         </motion.p>
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            duration: 0.3,
-            delay: 1,
-          }}
-          className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
-        >
-          <Link href={"/sign-in"}>
-            <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-              Get Started
-            </button>
-          </Link>
-        </motion.div>
+        
+        {/* 2. Conditionally render the button only if the user is NOT logged in */}
+        {!user && (
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.3,
+              delay: 1,
+            }}
+            className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
+          >
+            <Link href={"/sign-up"}>
+              <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+                Get Started
+              </button>
+            </Link>
+          </motion.div>
+        )}
+
         <motion.div
           initial={{
             opacity: 0,
@@ -94,15 +100,15 @@ export default function HeroSectionOne() {
           }}
           className="relative z-10 mt-20 rounded-3xl border border-neutral-200 bg-neutral-100 p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900"
         >
-          <div className="w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700">
+          {/* <div className="w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700">
             <img
-              src="https://assets.aceternity.com/pro/aceternity-landing.webp"
-              alt="Landing page preview"
+              src="https://images.unsplash.com/photo-1576091160550-fd4220c3844d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="AI Medical Voice Assistant preview"
               className="aspect-[16/9] h-auto w-full object-cover"
               height={1000}
               width={1000}
             />
-          </div>
+          </div> */}
         </motion.div>
       </div>
       <FeatureBentoGrid />
@@ -116,7 +122,7 @@ const Navbar = () => {
     <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
       <div className="flex items-center gap-2">
         <div className="size-7 rounded-full bg-gradient-to-br from-violet-500 to-pink-500" />
-        <h1 className="text-base font-bold md:text-2xl">Aceternity UI</h1>
+        <h1 className="text-base font-bold md:text-2xl">AI Medical Voice Agent</h1> {/* Changed app name */}
       </div>
       {!user ? (
         <Link href="/sign-in">
@@ -128,7 +134,9 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {" "}
           <UserButton />
-          <Button>Dashboard</Button>
+          <Link href="/dashboard"> {/* Added Link component for Dashboard button */}
+            <Button>Dashboard</Button>
+          </Link>
         </div>
       )}
     </nav>
