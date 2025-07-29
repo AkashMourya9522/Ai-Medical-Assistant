@@ -57,6 +57,7 @@ Only include valid fields. Respond with nothing else.
       ?.trim()
       .replace("```json", "")
       .replace("```", "");
+      //@ts-ignore
     const stringVersion = JSON.parse(cleanedResponse);
     const result = await db
       .update(SessionChatTable)
